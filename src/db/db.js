@@ -15,7 +15,8 @@ db.exec(`
 `);
 
 export function getAllBooks() {
-    return db.prepare('SELECT * FROM books ORDER BY id').all();
+    const books = db.prepare('SELECT * FROM books ORDER BY id').all().map(book => ({...book}));
+    return books;
 }
 
 export function insertBook({ title, price, rating, url }) {
