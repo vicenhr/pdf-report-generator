@@ -1,38 +1,47 @@
 import express from 'express';
 import {
     createReport,
-    getReportById
+    getReportById,
+    getReportCreatedToday
 } from '../service/reportService.js';
 import path from "node:path";
 
 const router = express.Router();
 
-router.param('id', async(req, res, next, id) =>{
+router.use(express.json());
+
+router.param('id', async (req, res, next, id) => {
     const reportId = Number(id);
-    if(isNaN(reportId)){
-        return res.status(400).json({ error: "Invalid ID"});
+    if (isNaN(reportId)) {
+        return res.status(400).json({ error: "Invalid ID" });
     }
 
-    try{
+    try {
         const report = getReportById(reportId);
-        if(!report){
-            return res.status(404).json({ error: `Report ${id} not found`});
+        if (!report) {
+            return res.status(404).json({ error: `Report ${id} not found` });
         }
         req.report = report;
         req.reportId = reportId;
         next();
-    }catch (err){
+    } catch (err) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 router.post('/reports', async (req, res) => {
-    try {
-        const { id, file } = await createReport();
-        return res.status(201).json({ id, file });
-    } catch (error) {
-        return res.status(500).json({ error: 'No se pudo generar el reporte' });
+    const report = getReportCreatedToday();
+
+    if (!report || req.body?.force === true) {
+        try {
+            const { id, file } = await createReport();
+            return res.status(201).json({ id, file });
+        } catch (error) {
+            return res.status(500).json({ error: 'No se pudo generar el reporte'});
+        }
     }
+    
+    return res.status(200).json({ id: report.id, file: `/reports/${report.id}/file`});
 });
 
 router.get('/reports/:id', (req, res) => {
@@ -41,7 +50,7 @@ router.get('/reports/:id', (req, res) => {
 
 router.get('/reports/:id/file', (req, res) => {
     const filePath = path.join(import.meta.dirname, "..", "..", req.report.path);
-    
+
     res.sendFile(filePath, (err) => {
         if (err) {
             res.status(404).json({ error: "Archivo no encontrado" });

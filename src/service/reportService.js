@@ -3,8 +3,9 @@ import { getAllBooks } from '../db/db.js';
 import { getReportData } from './getReportData.js';
 import { buildHtml } from '../render/buildHtml.js';
 import { htmlToPdf } from '../render/htmlToPdf.js';
-import{
-    findById
+import {
+    findById,
+    findReportCreatedToday
 } from '../repository/reportRepository.js';
 import fs from 'fs/promises';
 
@@ -36,4 +37,8 @@ export async function createReport() {
 
 export function getReportById(id) {
     return findById(id);
+}
+
+export function getReportCreatedToday() {
+    return findReportCreatedToday();
 }
