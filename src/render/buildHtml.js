@@ -1,7 +1,3 @@
-import { getReportData } from '../reports/getReportData.js';
-import { getAllBooks } from '../db/db.js';
-import fs from 'fs/promises';
-
 export function buildHtml(reportData, allBooks) {
     const filasTop5 = reportData.top5Expensive
         .map(book => `<tr><td>${book.title}</td><td>£${book.price}</td></tr>`)
@@ -58,16 +54,3 @@ export function buildHtml(reportData, allBooks) {
         </html>
     `;
 }
-
-// async function createHtmlReport(reportData, allBooks) {
-//     await fs.mkdir('./cache', { recursive: true });
-//     const html = buildHtml(reportData, allBooks);
-//     await fs.writeFile('cache/pdfReport.html', html);
-// }
-
-// async function main() {
-//     await createHtmlReport(getReportData(), getAllBooks());
-//     console.log("HTML generado en cache/pdfReport.html");
-// }
-
-// main();

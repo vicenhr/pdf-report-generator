@@ -1,9 +1,4 @@
 import { chromium } from "playwright";
-import { buildHtml } from './buildHtml.js';
-
-import { getReportData } from '../reports/getReportData.js';
-import { getAllBooks } from '../db/db.js';
-import fs from 'fs/promises';
 
 export async function htmlToPdf(html) {
     const browser = await chromium.launch();
@@ -21,5 +16,8 @@ export async function htmlToPdf(html) {
     return pdf; // Buffer
 }
 
-const pdf = await htmlToPdf(buildHtml(getReportData(), getAllBooks()));
-await fs.writeFile('output/output.pdf', pdf);
+// export async function main (reportData, allBooks) {
+//     await fs.mkdir('./cache', { recursive: true });
+//     const pdf = await htmlToPdf(buildHtml(reportData, allBooks));
+//     await fs.writeFile('output/output.pdf', pdf);
+// }

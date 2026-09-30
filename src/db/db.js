@@ -12,6 +12,12 @@ db.exec(`
         rating REAL NOT NULL CHECK (rating >= 0 AND rating <= 5),
         url TEXT NOT NULL UNIQUE
     );
+
+    CREATE TABLE IF NOT EXISTS reports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL UNIQUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
 `);
 
 export function getAllBooks() {
